@@ -14,8 +14,8 @@ public class RecruiterProfile {
     @MapsId
     private Users userId;
 
-    private String firstname;
-    private String lastname;
+    //private String firstname;
+    //private String lastname;
     private String city;
     private String state;
     private String country;
@@ -26,11 +26,9 @@ public class RecruiterProfile {
     public RecruiterProfile() {
     }
 
-    public RecruiterProfile(int userAccountId, Users userId, String firstname, String lastname, String city, String state, String country, String company, String profilePhoto) {
+    public RecruiterProfile(int userAccountId, Users userId, String city, String state, String country, String company, String profilePhoto) {
         this.userAccountId = userAccountId;
         this.userId = userId;
-        this.firstname = firstname;
-        this.lastname = lastname;
         this.city = city;
         this.state = state;
         this.country = country;
@@ -39,7 +37,7 @@ public class RecruiterProfile {
     }
 
     public RecruiterProfile(Users users) {
-       this.userId=users;
+        this.userId=users;
     }
 
     public int getUserAccountId() {
@@ -56,22 +54,6 @@ public class RecruiterProfile {
 
     public void setUserId(Users userId) {
         this.userId = userId;
-    }
-
-    public String getFirstname() {
-        return firstname;
-    }
-
-    public void setFirstname(String firstname) {
-        this.firstname = firstname;
-    }
-
-    public String getLastname() {
-        return lastname;
-    }
-
-    public void setLastname(String lastname) {
-        this.lastname = lastname;
     }
 
     public String getCity() {
@@ -119,8 +101,6 @@ public class RecruiterProfile {
         return "RecruiterProfile{" +
                 "userAccountId=" + userAccountId +
                 ", userId=" + userId +
-                ", firstname='" + firstname + '\'' +
-                ", lastname='" + lastname + '\'' +
                 ", city='" + city + '\'' +
                 ", state='" + state + '\'' +
                 ", country='" + country + '\'' +
