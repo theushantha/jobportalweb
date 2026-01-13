@@ -59,7 +59,7 @@ public class WebSecurityConfig {
                     logout.logoutSuccessUrl("/");
                 }).cors(Customizer.withDefaults())
                 .csrf(csrf->csrf.disable());
-        
+
         return http.build();
     }
 
