@@ -44,7 +44,8 @@ public class UsersController {
    public String userRegistration(@Valid Users users){
         //System.out.println("User : "+users);
        usersService.addNew(users);
-       return "dashboard";
+       return "redirect:/login?registered";
+
    }
 
    @GetMapping("/login")

@@ -77,14 +77,8 @@
             </li>
 
         </ul>
-        <label th:if="${user != null and user.firstName != null and user.lastName != null}"
-               th:text="${user.firstName + ' ' + user.lastName}"
-               class="nav-item nav-link px-2 me-3">
-        </label>
+        <label class="nav-item nav-link px-2 me-3" sec:authentication="name"></label>
 
-        <label th:unless="${user != null and user.firstName != null and user.lastName != null}"
-               th:text="${username}"
-               class="nav-item nav-link px-2 me-3"></label>
 
 
         <button class="myBtn-light me-5" onclick="window.location.href='/logout'">Logout</button>
