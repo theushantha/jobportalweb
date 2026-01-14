@@ -77,6 +77,15 @@
             </li>
 
         </ul>
+
+        <img
+            class="rounded-circle me-3"
+            height="50px"
+            width="50x"
+            th:if="${user.photosImagePath!=null}"
+            th:src="@{${user?.photosImagePath}}"
+        />
+
         <label class="nav-item nav-link px-2 me-3" sec:authentication="name"></label>
 
 
