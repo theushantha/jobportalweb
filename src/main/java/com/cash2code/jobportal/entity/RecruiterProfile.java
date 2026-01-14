@@ -14,10 +14,9 @@ public class RecruiterProfile {
     @MapsId
     private Users userId;
 
-    @Column(name = "first_name")
-    private String firstname;
-    @Column(name = "last_name")
-    private String lastname;
+
+    private String firstName;
+    private String lastName;
     private String city;
     private String state;
     private String country;
@@ -28,11 +27,11 @@ public class RecruiterProfile {
     public RecruiterProfile() {
     }
 
-    public RecruiterProfile(int userAccountId, Users userId, String firstname, String lastname, String city, String state, String country, String company, String profilePhoto) {
+    public RecruiterProfile(int userAccountId, Users userId, String firstName, String lastName, String city, String state, String country, String company, String profilePhoto) {
         this.userAccountId = userAccountId;
         this.userId = userId;
-        this.firstname = firstname;
-        this.lastname = lastname;
+        this.firstName = firstName;
+        this.lastName = lastName;
         this.city = city;
         this.state = state;
         this.country = country;
@@ -60,20 +59,20 @@ public class RecruiterProfile {
         this.userId = userId;
     }
 
-    public String getFirstname() {
-        return firstname;
+    public String getFirstName() {
+        return firstName;
     }
 
-    public void setFirstname(String firstname) {
-        this.firstname = firstname;
+    public void setFirstName(String firstName) {
+        this.firstName = firstName;
     }
 
-    public String getLastname() {
-        return lastname;
+    public String getLastName() {
+        return lastName;
     }
 
-    public void setLastname(String lastname) {
-        this.lastname = lastname;
+    public void setLastName(String lastName) {
+        this.lastName = lastName;
     }
 
     public String getCity() {
@@ -127,8 +126,8 @@ public class RecruiterProfile {
         return "RecruiterProfile{" +
                 "userAccountId=" + userAccountId +
                 ", userId=" + userId +
-                ", firstname='" + firstname + '\'' +
-                ", lastname='" + lastname + '\'' +
+                ", firstName='" + firstName + '\'' +
+                ", lastName='" + lastName + '\'' +
                 ", city='" + city + '\'' +
                 ", state='" + state + '\'' +
                 ", country='" + country + '\'' +
@@ -137,3 +136,4 @@ public class RecruiterProfile {
                 '}';
     }
 }
+

@@ -18,7 +18,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.multipart.MultipartFile;
-import org.thymeleaf.util.StringUtils;
+import org.springframework.util.StringUtils;
 
 import java.util.Objects;
 import java.util.Optional;
@@ -69,19 +69,12 @@ public class RecruiterProfileController {
              recruiterProfile.setUserAccountId(users.getUserId());
          }
          model.addAttribute("profile",recruiterProfile);
-         String fileName = null;
-
-         if (multipartFile != null && !multipartFile.isEmpty()) {
-
-             String originalFilename =
-                     Objects.requireNonNullElse(multipartFile.getOriginalFilename(), "");
-
-             fileName = java.nio.file.Path
-                     .of(originalFilename)
-                     .getFileName()
-                     .toString();
-
+         String fileName = " ";
+         if (!multipartFile.getOriginalFilename().equals("")) {
+             fileName = StringUtils.cleanPath(Objects.requireNonNull(multipartFile
+                     .getOriginalFilename()));
              recruiterProfile.setProfilePhoto(fileName);
+
          }
 
 
