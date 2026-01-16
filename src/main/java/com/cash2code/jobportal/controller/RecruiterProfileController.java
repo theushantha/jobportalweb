@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.util.StringUtils;
 
+import java.io.IOException;
 import java.util.Objects;
 import java.util.Optional;
 
@@ -69,7 +70,10 @@ public class RecruiterProfileController {
              recruiterProfile.setUserAccountId(users.getUserId());
          }
          model.addAttribute("profile",recruiterProfile);
-         String fileName = " ";
+
+         //Handling file upload for the profile image
+         String fileName = "";
+
          if (!multipartFile.getOriginalFilename().equals("")) {
              fileName = StringUtils.cleanPath(Objects.requireNonNull(multipartFile
                      .getOriginalFilename()));
@@ -77,10 +81,9 @@ public class RecruiterProfileController {
 
          }
 
-
          RecruiterProfile savedUser = recruiterProfileService.addNew(recruiterProfile);
 
-         String uploadDir = "photos/recruiter/" + savedUser.getUserAccountId();
+         String uploadDir = "photos/recruiter/" +savedUser.getUserAccountId();
          try{
              FileUploadUtil.saveFile(uploadDir,fileName,multipartFile);
          }catch (Exception ex) {

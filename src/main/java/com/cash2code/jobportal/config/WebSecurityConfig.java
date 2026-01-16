@@ -36,6 +36,7 @@ public class WebSecurityConfig {
         "/css/**",
         "/summernote/**",
         "/js/**",
+            "/photos/**",
         "/*.css",
         "/*.js",
         "/*.js.map",
@@ -75,6 +76,8 @@ public class WebSecurityConfig {
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
+
+
 
 
 }
