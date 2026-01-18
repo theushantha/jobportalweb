@@ -1,8 +1,10 @@
 package com.cash2code.jobportal.controller;
 
 import com.cash2code.jobportal.entity.*;
+import com.cash2code.jobportal.repository.JobSeekerSaveRepository;
 import com.cash2code.jobportal.services.JobPostActivityService;
 import com.cash2code.jobportal.services.JobSeekerApplyService;
+import com.cash2code.jobportal.services.JobSeekerSaveService;
 import com.cash2code.jobportal.services.UsersService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
@@ -29,12 +31,14 @@ public class JobpostActivityController {
     private final UsersService usersService;
     private final JobPostActivityService jobPostActivityService;
     private final JobSeekerApplyService jobSeekerApplyService;
+    private final JobSeekerSaveService jobSeekerSaveService;
 
     @Autowired
-    public JobpostActivityController(UsersService usersService, JobPostActivityService jobPostActivityService, JobSeekerApplyService jobSeekerApplyService) {
+    public JobpostActivityController(UsersService usersService, JobPostActivityService jobPostActivityService, JobSeekerApplyService jobSeekerApplyService, JobSeekerSaveService jobSeekerSaveService) {
         this.usersService = usersService;
         this.jobPostActivityService = jobPostActivityService;
         this.jobSeekerApplyService = jobSeekerApplyService;
+        this.jobSeekerSaveService = jobSeekerSaveService;
     }
 
     //Dashboard LeftSide Bar
@@ -119,11 +123,43 @@ public class JobpostActivityController {
             } else {
                 List<JobSeekerApply> jobSeekerApplyList = jobSeekerApplyService
                         .getCandidatesJobs((JobSeekerProfile) currentUserProfile);
+                List<JobSeekerSave> jobSeekerSaveList = jobSeekerSaveService.getCandidatesJob(
+                        (JobSeekerProfile) currentUserProfile);
 
+                boolean exist;
+                boolean saved;
+
+                for (JobPostActivity jobActivity : jobPost) {
+                    exist=false;
+                    saved=false;
+                    for (JobSeekerApply jobSeekerApply:jobSeekerApplyList) {
+                        if(Objects.equals(jobActivity.getJobPostId(),jobSeekerApply.getJob().getJobPostId())) {
+                            jobActivity.setIsActive(true);
+                            exist = true;
+                            break;
+                        }
+                    }
+
+                    for (JobSeekerSave jobSeekerSave:jobSeekerSaveList){
+                        if(Objects.equals(jobActivity.getJobPostId(),jobSeekerSave.getJob().getJobPostId())){
+                            jobActivity.setIsSaved(true);
+                            saved = true;
+                            break;
+                        }
+                    }
+
+                    if(!exist) {
+                        jobActivity.setIsActive(false);
+                    }
+                    if(!saved) {
+                        jobActivity.setIsSaved(false);
+                    }
+
+                    model.addAttribute("jobPost",jobPost);
+                }
             }
         }
         model.addAttribute("user", currentUserProfile);
-        System.out.println("Dashboard");
         return "dashboard";
     }
 
