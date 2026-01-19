@@ -89,10 +89,11 @@ public class JobSeekerApplyController {
             String currentUsername = authentication.getName();
             Users user = usersService.findByEmail(currentUsername);
             Optional<JobSeekerProfile> seekerProfile = jobSeekerProfileService.getOne(user.getUserId());
-            JobPostActivity jobpostActivity = jobPostActivityService.getOne(user.getUserId());
-            if(seekerProfile.isPresent() && jobpostActivity != null) {
+            JobPostActivity jobPostActivity = jobPostActivityService.getOne(id);
+            if (seekerProfile.isPresent() && jobPostActivity != null) {
+                jobSeekerApply = new JobSeekerApply();
                 jobSeekerApply.setUserId(seekerProfile.get());
-                jobSeekerApply.setJob(jobpostActivity);
+                jobSeekerApply.setJob(jobPostActivity);
                 jobSeekerApply.setApplyDate(new Date());
             }else{
                 throw new RuntimeException("User not found");
