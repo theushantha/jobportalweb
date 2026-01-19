@@ -11,8 +11,11 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 
+import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 
 @Controller
 public class JobSeekerApplyController {
@@ -61,7 +64,7 @@ public class JobSeekerApplyController {
                     for (JobSeekerSave jobSeekerSave:jobSeekerSaveList){
                         if(jobSeekerSave.getUserId().getUserAccountId()==user.getUserAccountId()){
                             saved = true;
-                            break;;
+                            break;
                         }
                     }
                 }
@@ -74,6 +77,28 @@ public class JobSeekerApplyController {
         model.addAttribute("jobDetails", jobDetails);
         model.addAttribute("user",usersService.getCurrentUserProfile());
         return "job-details";
+
+    }
+
+    @PostMapping("job-details/apply/{id}")
+    public String apply(@PathVariable("id") int id, JobSeekerApply jobSeekerApply){
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if(!(authentication instanceof AnonymousAuthenticationToken)) {
+            String currentUsername = authentication.getName();
+            Users user = usersService.findByEmail(currentUsername);
+            Optional<JobSeekerProfile> seekerProfile = jobSeekerProfileService.getOne(user.getUserId());
+            JobPostActivity jobpostActivity = jobPostActivityService.getOne(user.getUserId());
+            if(seekerProfile.isPresent() && jobpostActivity != null) {
+                jobSeekerApply.setUserId(seekerProfile.get());
+                jobSeekerApply.setJob(jobpostActivity);
+                jobSeekerApply.setApplyDate(new Date());
+            }else{
+                throw new RuntimeException("User not found");
+            }
+            jobSeekerApplyService.addNew(jobSeekerApply);
+
+        }
+        return "redirect:/dashboard/";
 
     }
 }
