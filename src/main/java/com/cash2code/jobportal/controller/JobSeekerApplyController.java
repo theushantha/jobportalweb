@@ -67,6 +67,8 @@ public class JobSeekerApplyController {
                             break;
                         }
                     }
+                    model.addAttribute("alreadyApplied",exists);
+                    model.addAttribute("alreadySaved",saved);
                 }
             }
         }
