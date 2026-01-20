@@ -197,7 +197,7 @@ public class JobpostActivityController {
     @PostMapping("/dashboard/deleteJob/{id}")
     public String deleteJob(@PathVariable("id") int id) {
 
-        jobPostActivityService.delete(id);
+        jobPostActivityService.deleteJobById(id);
         return "redirect:/dashboard/";
     }
 

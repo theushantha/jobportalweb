@@ -2,8 +2,11 @@ package com.cash2code.jobportal.services;
 
 import com.cash2code.jobportal.entity.*;
 import com.cash2code.jobportal.repository.JobPostActivityRepository;
+import com.cash2code.jobportal.repository.JobSeekerApplyRepository;
+import com.cash2code.jobportal.repository.JobSeekerSaveRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -14,10 +17,14 @@ import java.util.Objects;
 public class JobPostActivityService {
 
     private final JobPostActivityRepository jobPostActivityRepository;
+    private final JobSeekerApplyRepository jobSeekerApplyRepository;
+    private final JobSeekerSaveRepository jobSeekerSaveRepository;
 
     @Autowired
-    public JobPostActivityService(JobPostActivityRepository jobPostActivityRepository) {
+    public JobPostActivityService(JobPostActivityRepository jobPostActivityRepository, JobSeekerApplyRepository jobSeekerApplyRepository, JobSeekerSaveRepository jobSeekerSaveRepository) {
         this.jobPostActivityRepository = jobPostActivityRepository;
+        this.jobSeekerApplyRepository = jobSeekerApplyRepository;
+        this.jobSeekerSaveRepository = jobSeekerSaveRepository;
     }
 
     public JobPostActivity addNew(JobPostActivity jobPostActivity){
@@ -48,8 +55,17 @@ public class JobPostActivityService {
                 "found") );
     }
 
-    public void delete(int id) {
-        jobPostActivityRepository.deleteById(id);
+    @Transactional
+    public void deleteJobById(Integer jobId) {
+        JobPostActivity job = jobPostActivityRepository.findById(jobId)
+                .orElseThrow(() -> new RuntimeException("Job not found: " + jobId));
+
+        // delete children first
+        jobSeekerApplyRepository.deleteByJob(job);
+        jobSeekerSaveRepository.deleteByJob(job); // remove if you don't have saves
+
+        // now delete parent
+        jobPostActivityRepository.delete(job);
     }
 
     public List<JobPostActivity> getAll() {
