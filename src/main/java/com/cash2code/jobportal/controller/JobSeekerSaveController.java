@@ -1,9 +1,6 @@
 package com.cash2code.jobportal.controller;
 
-import com.cash2code.jobportal.entity.JobPostActivity;
-import com.cash2code.jobportal.entity.JobSeekerProfile;
-import com.cash2code.jobportal.entity.JobSeekerSave;
-import com.cash2code.jobportal.entity.Users;
+import com.cash2code.jobportal.entity.*;
 import com.cash2code.jobportal.services.JobPostActivityService;
 import com.cash2code.jobportal.services.JobSeekerProfileService;
 import com.cash2code.jobportal.services.JobSeekerSaveService;
@@ -18,6 +15,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -37,27 +35,32 @@ public class JobSeekerSaveController {
     }
 
     @PostMapping("job-details/save/{id}")
-    public String save(@PathVariable("id") int id, JobSeekerSave jobSeekerSave) {
+    public String save(@PathVariable("id") int id) {
 
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        if (!(authentication instanceof AnonymousAuthenticationToken)) {
-            String currentUsername = authentication.getName();
-            Users user = usersService.findByEmail(currentUsername);
-            Optional<JobSeekerProfile> seekerProfile = jobSeekerProfileService.getOne(user.getUserId());
-            JobPostActivity jobPostActivity = jobPostActivityService.getOne(user.getUserId());
-            if (seekerProfile.isPresent() && jobPostActivity != null) {
-                jobSeekerSave.setJob(jobPostActivity);
-                jobSeekerSave.setJob(jobPostActivity);
-                jobSeekerSave.setUserId(seekerProfile.get());
-            } else {
-                throw new RuntimeException("User not found.");
-            }
-            jobSeekerSaveService.addNew(jobSeekerSave);
-
-
+        if (authentication instanceof AnonymousAuthenticationToken) {
+            return "redirect:/login";
         }
+
+        String currentUsername = authentication.getName();
+        Users user = usersService.findByEmail(currentUsername);
+
+        Optional<JobSeekerProfile> seekerProfileOpt = jobSeekerProfileService.getOne(user.getUserId());
+        JobPostActivity jobPostActivity = jobPostActivityService.getOne(id);
+
+        if (seekerProfileOpt.isEmpty() || jobPostActivity == null) {
+            throw new RuntimeException("User or Job not found.");
+        }
+
+        JobSeekerSave jobSeekerSave = new JobSeekerSave();
+        jobSeekerSave.setUserId(seekerProfileOpt.get());
+        jobSeekerSave.setJob(jobPostActivity);
+
+        jobSeekerSaveService.addNew(jobSeekerSave);
+
         return "redirect:/dashboard/";
     }
+
 
     @GetMapping("saved-jobs/")
     public String savedJobs(Model model){
